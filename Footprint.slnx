@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/API/">
+    <Project Path="API/Footprint.csproj" />
+  </Folder>
+</Solution>
