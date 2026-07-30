@@ -111,30 +111,54 @@ public class ProfileController : ControllerBase
     }
 
     [HttpGet("liked-trips")]
-    public async Task<IActionResult> GetLikedTrips()
-    {
-        var user = await _userManager.GetUserAsync(User); //_userManage可以直接获取当前用户的信息
-        if (user == null) return NotFound();
-
-        var likedTrips = await _context.Likes
-            .Where(l => l.UserId == user.Id)
-            .Include(l => l.Trip)
-            .Select(l => l.Trip)
-            .ToListAsync();
-        return Ok(likedTrips);
-    }
-
-    [HttpGet("saved-trips")]
-    public async Task<IActionResult> GetSavedTrips()
+    public async Task<ActionResult<List<DiscoverTripSummary>>> GetLikedTrips()
     {
         var user = await _userManager.GetUserAsync(User);
         if (user == null) return NotFound();
 
-        var savedTrips = await _context.Favorites
-            .Where(s => s.UserId == user.Id)
-            .Include(s => s.Trip)
-            .Select(s => s.Trip)
+        var trips = await _context.Likes
+            .Where(l => l.UserId == user.Id)
+            .OrderByDescending(l => l.CreatedAt)
+            .Select(l => new DiscoverTripSummary(
+                l.Trip!.Id,
+                l.Trip.Title,
+                l.Trip.Destination,
+                l.Trip.StartDate,
+                l.Trip.EndDate,
+                l.Trip.Photos.OrderBy(p => p.UploadedAt).Select(p => "/uploads/" + p.FileName).FirstOrDefault(),
+                l.Trip.Photos.OrderBy(p => p.UploadedAt).Select(p => "/uploads/" + p.FileName).ToList(),
+                l.Trip.User!.DisplayName,
+                l.Trip.User.AvatarFileName == null ? null : "/uploads/" + l.Trip.User.AvatarFileName,
+                l.Trip.Likes.Count,
+                true))
             .ToListAsync();
-        return Ok(savedTrips);
+
+        return Ok(trips);
+    }
+
+    [HttpGet("saved-trips")]
+    public async Task<ActionResult<List<DiscoverTripSummary>>> GetSavedTrips()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return NotFound();
+
+        var trips = await _context.Favorites
+            .Where(f => f.UserId == user.Id)
+            .OrderByDescending(f => f.CreatedAt)
+            .Select(f => new DiscoverTripSummary(
+                f.Trip!.Id,
+                f.Trip.Title,
+                f.Trip.Destination,
+                f.Trip.StartDate,
+                f.Trip.EndDate,
+                f.Trip.Photos.OrderBy(p => p.UploadedAt).Select(p => "/uploads/" + p.FileName).FirstOrDefault(),
+                f.Trip.Photos.OrderBy(p => p.UploadedAt).Select(p => "/uploads/" + p.FileName).ToList(),
+                f.Trip.User!.DisplayName,
+                f.Trip.User.AvatarFileName == null ? null : "/uploads/" + f.Trip.User.AvatarFileName,
+                f.Trip.Likes.Count,
+                f.Trip.Likes.Any(l => l.UserId == user.Id)))
+            .ToListAsync();
+
+        return Ok(trips);
     }
 }

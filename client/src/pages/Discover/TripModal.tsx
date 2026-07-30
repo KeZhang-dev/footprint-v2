@@ -14,6 +14,7 @@ interface TripModalProps {
   tripId: number
   onClose: () => void
   onLikeChange: (tripId: number, liked: boolean, likeCount: number) => void
+  onFavoriteChange?: (tripId: number, favorited: boolean) => void
 }
 
 function formatDateRange(start: string, end: string) {
@@ -105,7 +106,7 @@ function Carousel({ photoUrls }: { photoUrls: string[] }) {
   )
 }
 
-function TripModal({ tripId, onClose, onLikeChange }: TripModalProps) {
+function TripModal({ tripId, onClose, onLikeChange, onFavoriteChange }: TripModalProps) {
   const [detail, setDetail] = useState<DiscoverTripDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -158,6 +159,7 @@ function TripModal({ tripId, onClose, onLikeChange }: TripModalProps) {
         ? await unfavoriteTrip(tripId)
         : await favoriteTrip(tripId)
       setDetail({ ...detail, favoritedByMe: result.favorited })
+      onFavoriteChange?.(tripId, result.favorited)
     } catch {
       setError('Could not update favorite.')
     } finally {

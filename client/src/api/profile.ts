@@ -1,4 +1,5 @@
 import { authHeaders, handleJson } from './http'
+import type { DiscoverTripSummary } from './discover'
 
 export interface Profile {
   email: string
@@ -44,4 +45,16 @@ export function uploadAvatar(file: File): Promise<Profile> {
     headers: authHeaders(),
     body,
   }).then((res) => handleJson<Profile>(res, SESSION_BOUND))
+}
+
+export function getLikedTrips(): Promise<DiscoverTripSummary[]> {
+  return fetch(`${BASE_URL}/liked-trips`, { headers: authHeaders() }).then(
+    (res) => handleJson<DiscoverTripSummary[]>(res, SESSION_BOUND),
+  )
+}
+
+export function getSavedTrips(): Promise<DiscoverTripSummary[]> {
+  return fetch(`${BASE_URL}/saved-trips`, { headers: authHeaders() }).then(
+    (res) => handleJson<DiscoverTripSummary[]>(res, SESSION_BOUND),
+  )
 }
