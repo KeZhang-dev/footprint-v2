@@ -19,6 +19,8 @@ import { reportSessionExpired } from '../auth/session'
 const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim()
 export const API_BASE_URL =
   rawApiBaseUrl && rawApiBaseUrl !== 'undefined' ? rawApiBaseUrl : ''
+// TEMPORARY - remove after confirming the runtime value in production.
+console.log('API_BASE_URL module init - raw env var:', JSON.stringify(rawApiBaseUrl), 'resolved API_BASE_URL:', JSON.stringify(API_BASE_URL))
 
 // Prefixes a root-relative API or /uploads/* path with API_BASE_URL. A
 // no-op locally/in docker-compose, where API_BASE_URL is empty.

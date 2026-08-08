@@ -24,7 +24,10 @@ async function handle(res: Response): Promise<AuthResponse> {
 }
 
 export function register(email: string, password: string): Promise<AuthResponse> {
-  return fetch(`${BASE_URL}/register`, {
+  const url = `${BASE_URL}/register`
+  // TEMPORARY - remove after confirming the runtime URL in production.
+  console.log('REGISTER FETCH URL:', url)
+  return fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
