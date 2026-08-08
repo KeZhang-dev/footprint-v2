@@ -8,7 +8,17 @@ import { reportSessionExpired } from '../auth/session'
 // (build-time — Vite bakes it in via import.meta.env) when the frontend is
 // deployed separately from the API, e.g. the Render frontend service
 // pointed at the Render API's own origin.
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
+//
+// Guards against more than just "unset": `?? ''` alone only catches the JS
+// values null/undefined, not a platform env var whose value is literally
+// the 4-character string "undefined" (e.g. left over from clearing a
+// dashboard field, or a broken template substitution upstream) - that
+// string is truthy and passes `?? ''` right through, silently producing
+// request URLs like "/undefined/api/...". Treat that string, and blank/
+// whitespace-only values, the same as unset.
+const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim()
+export const API_BASE_URL =
+  rawApiBaseUrl && rawApiBaseUrl !== 'undefined' ? rawApiBaseUrl : ''
 
 // Prefixes a root-relative API or /uploads/* path with API_BASE_URL. A
 // no-op locally/in docker-compose, where API_BASE_URL is empty.
