@@ -1,32 +1,12 @@
 import { useAuthStore } from '../auth/authStore'
 import { reportSessionExpired } from '../auth/session'
 
-// Empty by default: every fetch call and rendered /uploads/* path stays a
-// root-relative URL, which resolves against the frontend's own origin — the
-// Vite dev proxy (vite.config.ts) and the client container's nginx.conf
-// both forward those to the API from there. Only set VITE_API_BASE_URL
-// (build-time — Vite bakes it in via import.meta.env) when the frontend is
-// deployed separately from the API, e.g. the Render frontend service
-// pointed at the Render API's own origin.
-//
-// Guards against more than just "unset": `?? ''` alone only catches the JS
-// values null/undefined, not a platform env var whose value is literally
-// the 4-character string "undefined" (e.g. left over from clearing a
-// dashboard field, or a broken template substitution upstream) - that
-// string is truthy and passes `?? ''` right through, silently producing
-// request URLs like "/undefined/api/...". Treat that string, and blank/
-// whitespace-only values, the same as unset.
-const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim()
-export const API_BASE_URL =
-  rawApiBaseUrl && rawApiBaseUrl !== 'undefined' ? rawApiBaseUrl : ''
-// TEMPORARY - remove after confirming the runtime value in production.
-console.log('API_BASE_URL module init - raw env var:', JSON.stringify(rawApiBaseUrl), 'resolved API_BASE_URL:', JSON.stringify(API_BASE_URL))
-
-// Prefixes a root-relative API or /uploads/* path with API_BASE_URL. A
-// no-op locally/in docker-compose, where API_BASE_URL is empty.
-export function apiUrl(path: string): string {
-  return `${API_BASE_URL}${path}`
-}
+// Re-exported so existing `import { apiUrl } from './http'` call sites keep
+// working. auth.ts imports these from apiBase.ts directly instead of from
+// here — see apiBase.ts for why (this module sits in a circular dependency
+// with auth.ts via authStore.ts, and auth.ts can't safely get them through
+// that cycle).
+export { API_BASE_URL, apiUrl } from './apiBase'
 
 export function authHeaders(): HeadersInit {
   const token = useAuthStore.getState().session?.token
