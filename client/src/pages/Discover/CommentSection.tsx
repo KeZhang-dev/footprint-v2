@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { getComments, postComment, type TripComment } from '../../api/discover'
+import { apiUrl } from '../../api/http'
 
 interface CommentSectionProps {
   tripId: number
@@ -102,7 +103,7 @@ function CommentSection({ tripId, showInput, onCommentPosted }: CommentSectionPr
             <li key={comment.id} className="flex gap-2">
               {comment.authorAvatarUrl ? (
                 <img
-                  src={comment.authorAvatarUrl}
+                  src={apiUrl(comment.authorAvatarUrl)}
                   alt=""
                   className="h-7 w-7 shrink-0 rounded-full object-cover"
                 />

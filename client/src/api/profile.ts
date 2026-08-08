@@ -1,4 +1,4 @@
-import { authHeaders, handleJson } from './http'
+import { apiUrl, authHeaders, handleJson } from './http'
 import type { DiscoverTripSummary } from './discover'
 
 export interface Profile {
@@ -17,7 +17,7 @@ export interface ProfileInput {
   interests: string | null
 }
 
-const BASE_URL = '/api/profile'
+const BASE_URL = apiUrl('/api/profile')
 
 // Every endpoint here resolves to "the caller's own profile" (no id in the
 // URL), so a 404 can only mean the account behind the token no longer

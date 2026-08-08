@@ -12,6 +12,7 @@ import {
   type Trip,
   type TripInput,
 } from '../api/trips'
+import { apiUrl } from '../api/http'
 
 const emptyForm: TripInput = {
   title: '',
@@ -310,7 +311,7 @@ function Trips() {
                   {trip.photos.map((photo) => (
                     <div key={photo.id} className="group relative">
                       <img
-                        src={photo.url}
+                        src={apiUrl(photo.url)}
                         alt=""
                         className="h-16 w-16 rounded-lg object-cover"
                       />

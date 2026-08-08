@@ -1,4 +1,4 @@
-import { authHeaders, handleJson } from './http'
+import { apiUrl, authHeaders, handleJson } from './http'
 
 export interface LeaderboardEntry {
   userId: string
@@ -10,7 +10,7 @@ export interface LeaderboardEntry {
 }
 
 export function getLeaderboard(): Promise<LeaderboardEntry[]> {
-  return fetch('/api/leaderboard', { headers: authHeaders() }).then((res) =>
+  return fetch(apiUrl('/api/leaderboard'), { headers: authHeaders() }).then((res) =>
     handleJson<LeaderboardEntry[]>(res),
   )
 }

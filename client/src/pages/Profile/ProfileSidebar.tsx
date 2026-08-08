@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import type { Profile as ProfileData } from '../../api/profile'
 import { ALLOWED_PHOTO_TYPES, MAX_PHOTO_BYTES } from '../../api/trips'
+import { apiUrl } from '../../api/http'
 import BadgeChip from './BadgeChip'
 
 const IP_LOCATION_PLACEHOLDER = 'Christchurch, NZ'
@@ -61,7 +62,7 @@ function ProfileSidebar({ profile, onAvatarUpload }: ProfileSidebarProps) {
     <div className="flex flex-col items-center gap-4 rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm md:w-72 md:shrink-0">
       {profile.avatarUrl ? (
         <img
-          src={profile.avatarUrl}
+          src={apiUrl(profile.avatarUrl)}
           alt=""
           className="h-28 w-28 rounded-full object-cover"
         />

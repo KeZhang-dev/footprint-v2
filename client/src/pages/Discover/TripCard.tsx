@@ -1,4 +1,5 @@
 import type { DiscoverTripSummary } from '../../api/discover'
+import { apiUrl } from '../../api/http'
 
 interface TripCardProps {
   trip: DiscoverTripSummary
@@ -27,7 +28,7 @@ function TripCard({ trip, onOpen }: TripCardProps) {
       <div className="aspect-square w-full bg-slate-100">
         {trip.coverPhotoUrl ? (
           <img
-            src={trip.coverPhotoUrl}
+            src={apiUrl(trip.coverPhotoUrl)}
             alt=""
             className="h-full w-full object-cover"
           />
@@ -46,7 +47,7 @@ function TripCard({ trip, onOpen }: TripCardProps) {
           <div className="flex min-w-0 items-center gap-1.5">
             {trip.authorAvatarUrl ? (
               <img
-                src={trip.authorAvatarUrl}
+                src={apiUrl(trip.authorAvatarUrl)}
                 alt=""
                 className="h-5 w-5 shrink-0 rounded-full object-cover"
               />

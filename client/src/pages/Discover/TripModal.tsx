@@ -9,6 +9,7 @@ import {
   type DiscoverTripDetail,
 } from '../../api/discover'
 import CommentSection from './CommentSection'
+import { apiUrl } from '../../api/http'
 
 interface TripModalProps {
   tripId: number
@@ -188,7 +189,7 @@ function TripModal({ tripId, onClose, onLikeChange, onFavoriteChange }: TripModa
               <div className="flex items-center gap-2">
                 {detail.authorAvatarUrl ? (
                   <img
-                    src={detail.authorAvatarUrl}
+                    src={apiUrl(detail.authorAvatarUrl)}
                     alt=""
                     className="h-8 w-8 rounded-full object-cover"
                   />
@@ -212,7 +213,7 @@ function TripModal({ tripId, onClose, onLikeChange, onFavoriteChange }: TripModa
             </div>
 
             <div className="flex-1 overflow-y-auto">
-              <Carousel photoUrls={detail.photoUrls} />
+              <Carousel photoUrls={detail.photoUrls.map(apiUrl)} />
 
               <div className="flex flex-col gap-2 p-4">
                 <h2 className="text-lg font-semibold">{detail.title}</h2>

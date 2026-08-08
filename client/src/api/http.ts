@@ -1,6 +1,21 @@
 import { useAuthStore } from '../auth/authStore'
 import { reportSessionExpired } from '../auth/session'
 
+// Empty by default: every fetch call and rendered /uploads/* path stays a
+// root-relative URL, which resolves against the frontend's own origin — the
+// Vite dev proxy (vite.config.ts) and the client container's nginx.conf
+// both forward those to the API from there. Only set VITE_API_BASE_URL
+// (build-time — Vite bakes it in via import.meta.env) when the frontend is
+// deployed separately from the API, e.g. the Render frontend service
+// pointed at the Render API's own origin.
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
+
+// Prefixes a root-relative API or /uploads/* path with API_BASE_URL. A
+// no-op locally/in docker-compose, where API_BASE_URL is empty.
+export function apiUrl(path: string): string {
+  return `${API_BASE_URL}${path}`
+}
+
 export function authHeaders(): HeadersInit {
   const token = useAuthStore.getState().session?.token
   return token ? { Authorization: `Bearer ${token}` } : {}

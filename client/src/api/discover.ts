@@ -1,4 +1,4 @@
-import { authHeaders, handleJson } from './http'
+import { apiUrl, authHeaders, handleJson } from './http'
 
 export interface DiscoverTripSummary {
   id: number
@@ -62,53 +62,53 @@ export function getDiscoverFeed(
   const params = new URLSearchParams({ limit: String(limit) })
   if (cursor) params.set('cursor', cursor)
 
-  return fetch(`/api/discover?${params}`, { headers: authHeaders() }).then(
+  return fetch(apiUrl(`/api/discover?${params}`), { headers: authHeaders() }).then(
     (res) => handleJson<DiscoverFeedResponse>(res),
   )
 }
 
 export function getDiscoverTripDetail(id: number): Promise<DiscoverTripDetail> {
-  return fetch(`/api/discover/${id}`, { headers: authHeaders() }).then((res) =>
+  return fetch(apiUrl(`/api/discover/${id}`), { headers: authHeaders() }).then((res) =>
     handleJson<DiscoverTripDetail>(res),
   )
 }
 
 export function likeTrip(tripId: number): Promise<LikeToggleResult> {
-  return fetch(`/api/trips/${tripId}/like`, {
+  return fetch(apiUrl(`/api/trips/${tripId}/like`), {
     method: 'POST',
     headers: authHeaders(),
   }).then((res) => handleJson<LikeToggleResult>(res))
 }
 
 export function unlikeTrip(tripId: number): Promise<LikeToggleResult> {
-  return fetch(`/api/trips/${tripId}/like`, {
+  return fetch(apiUrl(`/api/trips/${tripId}/like`), {
     method: 'DELETE',
     headers: authHeaders(),
   }).then((res) => handleJson<LikeToggleResult>(res))
 }
 
 export function favoriteTrip(tripId: number): Promise<FavoriteToggleResult> {
-  return fetch(`/api/trips/${tripId}/favorite`, {
+  return fetch(apiUrl(`/api/trips/${tripId}/favorite`), {
     method: 'POST',
     headers: authHeaders(),
   }).then((res) => handleJson<FavoriteToggleResult>(res))
 }
 
 export function unfavoriteTrip(tripId: number): Promise<FavoriteToggleResult> {
-  return fetch(`/api/trips/${tripId}/favorite`, {
+  return fetch(apiUrl(`/api/trips/${tripId}/favorite`), {
     method: 'DELETE',
     headers: authHeaders(),
   }).then((res) => handleJson<FavoriteToggleResult>(res))
 }
 
 export function getComments(tripId: number): Promise<TripComment[]> {
-  return fetch(`/api/trips/${tripId}/comments`, {
+  return fetch(apiUrl(`/api/trips/${tripId}/comments`), {
     headers: authHeaders(),
   }).then((res) => handleJson<TripComment[]>(res))
 }
 
 export function postComment(tripId: number, text: string): Promise<TripComment> {
-  return fetch(`/api/trips/${tripId}/comments`, {
+  return fetch(apiUrl(`/api/trips/${tripId}/comments`), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...authHeaders() },
     body: JSON.stringify({ text }),

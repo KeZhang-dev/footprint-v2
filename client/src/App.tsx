@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from './auth/AuthContext'
 import { useAuthStore } from './auth/authStore'
+import { apiUrl } from './api/http'
 
 function navClass({ isActive }: { isActive: boolean }) {
     return [
@@ -58,7 +59,7 @@ function App() {
                                 <span className="flex items-center gap-2 px-2 text-base text-slate-600">
                                     {profile?.avatarUrl ? (
                                         <img
-                                            src={profile.avatarUrl}
+                                            src={apiUrl(profile.avatarUrl)}
                                             alt=""
                                             className="h-7 w-7 rounded-full object-cover"
                                         />

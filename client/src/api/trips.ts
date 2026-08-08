@@ -1,4 +1,4 @@
-import { authHeaders, handleJson } from './http'
+import { apiUrl, authHeaders, handleJson } from './http'
 
 export interface TripPhoto {
   id: number
@@ -22,7 +22,7 @@ export interface Trip {
 
 export type TripInput = Omit<Trip, 'id' | 'createdAt' | 'photos'>
 
-const BASE_URL = '/api/trips'
+const BASE_URL = apiUrl('/api/trips')
 
 export const MAX_PHOTO_BYTES = 2 * 1024 * 1024
 export const ALLOWED_PHOTO_TYPES = ['image/jpeg', 'image/png']

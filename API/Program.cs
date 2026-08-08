@@ -75,9 +75,22 @@ builder.Services.AddSingleton<IPhotoStorageService, PhotoStorageService>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
-        policy.WithOrigins("http://localhost:5173")
+    {
+        // The Vite dev origin is always allowed. The deployed frontend's
+        // origin (e.g. a Render static site) isn't known until Render
+        // assigns it, so it's read from config instead of hardcoded -
+        // set via the Cors__FrontendOrigin env var once that URL exists.
+        var origins = new List<string> { "http://localhost:5173" };
+        var frontendOrigin = builder.Configuration["Cors:FrontendOrigin"];
+        if (!string.IsNullOrWhiteSpace(frontendOrigin))
+        {
+            origins.Add(frontendOrigin);
+        }
+
+        policy.WithOrigins([.. origins])
               .AllowAnyHeader()
-              .AllowAnyMethod());
+              .AllowAnyMethod();
+    });
 });
 
 var app = builder.Build();

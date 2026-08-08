@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getLeaderboard, type LeaderboardEntry } from '../../api/leaderboard'
+import { apiUrl } from '../../api/http'
 import BadgeChip from './BadgeChip'
 
 function initials(name: string) {
@@ -76,7 +77,7 @@ function LeaderboardTab() {
                 <div className="flex items-center gap-3">
                   {entry.avatarUrl ? (
                     <img
-                      src={entry.avatarUrl}
+                      src={apiUrl(entry.avatarUrl)}
                       alt=""
                       className="h-8 w-8 rounded-full object-cover"
                     />

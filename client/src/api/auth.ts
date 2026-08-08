@@ -1,3 +1,5 @@
+import { apiUrl } from './http'
+
 export interface AuthResponse {
   token: string
   userId: string
@@ -6,7 +8,7 @@ export interface AuthResponse {
   expiresAt: string
 }
 
-const BASE_URL = '/api/auth'
+const BASE_URL = apiUrl('/api/auth')
 
 async function handle(res: Response): Promise<AuthResponse> {
   if (!res.ok) {
