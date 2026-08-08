@@ -8,7 +8,20 @@ using Footprint.Data;
 using Footprint.Models;
 using Footprint.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+// WebApplication.CreateBuilder(args) wires up its default appsettings.json/
+// appsettings.{Environment}.json sources with reloadOnChange: true before
+// any of our code runs, which registers a FileSystemWatcher (inotify on
+// Linux) as part of the CreateBuilder call itself - too early to disable
+// by touching builder.Configuration afterward. The only hook that lands
+// before that happens is the "hostBuilder:reloadConfigOnChange" bootstrap
+// switch, read from the same command-line args passed into CreateBuilder.
+// This app never edits its config files at runtime, so hot-reload buys
+// nothing, and Render's containers run under a low per-user inotify
+// instance limit that this watcher can exhaust (crashing startup with
+// "System.IO.IOException: The configured user limit ... on the number of
+// inotify instances has been reached").
+var builder = WebApplication.CreateBuilder(
+    [.. args, "--hostBuilder:reloadConfigOnChange=false"]);
 
 // Add services to the container.
 
@@ -74,8 +87,19 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
+}
 
-    using var scope = app.Services.CreateScope();
+// Migrations, role seeding, and the admin account seed run in every
+// environment (not just Development) so a fresh deploy - e.g. Render, with
+// an empty SQLite file and no manual migration step - comes up with a
+// working schema and a usable Admin login out of the box. Seeding a
+// hardcoded admin@footprint.com / Admin123! account into what an
+// environment check would otherwise treat as "production" is only
+// acceptable because this app is a demo/MSA submission with no real user
+// data at stake, not an actual production service. If that ever changes,
+// this needs a real one-time promotion flow instead.
+using (var scope = app.Services.CreateScope())
+{
     var db = scope.ServiceProvider.GetRequiredService<FootprintDbContext>();
     db.Database.Migrate();
 
@@ -88,7 +112,6 @@ if (app.Environment.IsDevelopment())
         }
     }
 
-    // Dev-only seeded admin account so the Admin role has at least one holder
     // 这个userManager是IdentityCore的UserManager，用于管理用户，也是触发hash密码的地方
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
     const string adminEmail = "admin@footprint.com";
