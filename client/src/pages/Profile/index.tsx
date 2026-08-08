@@ -5,13 +5,15 @@ import ProfileSidebar from './ProfileSidebar'
 import EditProfileTab from './EditProfileTab'
 import SavedTab from './SavedTripsTab'
 import LikedTab from './LikedTripsTab'
+import LeaderboardTab from './LeaderboardTab'
 
-type TabKey = 'edit' | 'saved' | 'liked'
+type TabKey = 'edit' | 'saved' | 'liked' | 'leaderboard'
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'edit', label: 'Edit' },
   { key: 'saved', label: 'Saved' },
   { key: 'liked', label: 'Liked' },
+  { key: 'leaderboard', label: 'Leaderboard' },
 ]
 
 function tabClass(active: boolean) {
@@ -92,6 +94,7 @@ function Profile() {
         {tab === 'edit' && <EditProfileTab profile={profile} onSaved={handleSaved} />}
         {tab === 'saved' && <SavedTab />}
         {tab === 'liked' && <LikedTab />}
+        {tab === 'leaderboard' && <LeaderboardTab />}
       </div>
     </div>
   )

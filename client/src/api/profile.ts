@@ -7,6 +7,8 @@ export interface Profile {
   bio: string | null
   interests: string | null
   avatarUrl: string | null
+  points: number
+  badge: string | null
 }
 
 export interface ProfileInput {

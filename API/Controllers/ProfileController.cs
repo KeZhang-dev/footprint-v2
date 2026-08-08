@@ -34,7 +34,7 @@ public class ProfileController : ControllerBase
             return NotFound();
         }
 
-        return Ok(ToResponse(user));
+        return Ok(await ToResponse(user));
     }
 
     [HttpPut]
@@ -56,7 +56,7 @@ public class ProfileController : ControllerBase
             return ValidationProblem(BuildModelState(result));
         }
 
-        return Ok(ToResponse(user));
+        return Ok(await ToResponse(user));
     }
 
     [HttpPost("avatar")]
@@ -89,16 +89,23 @@ public class ProfileController : ControllerBase
             _photoStorage.Delete(previousFileName);
         }
 
-        return Ok(ToResponse(user));
+        return Ok(await ToResponse(user));
     }
 
-    private static ProfileResponse ToResponse(ApplicationUser user) => new(
-        user.Email!,
-        user.DisplayName,
-        user.Bio,
-        user.Interests,
-        user.AvatarFileName is null ? null : $"/uploads/{user.AvatarFileName}"
-    );
+    private async Task<ProfileResponse> ToResponse(ApplicationUser user)
+    {
+        var points = await _context.Trips.CountAsync(t => t.UserId == user.Id && t.IsPublic);
+
+        return new(
+            user.Email!,
+            user.DisplayName,
+            user.Bio,
+            user.Interests,
+            user.AvatarFileName is null ? null : $"/uploads/{user.AvatarFileName}",
+            points,
+            Badges.ForPoints(points)
+        );
+    }
 
     private static ModelStateDictionary BuildModelState(IdentityResult result)
     {

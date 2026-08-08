@@ -1,0 +1,28 @@
+services:
+  api:
+    build:
+      context: ./API
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__FootprintDb: Data Source=/data/footprint.db
+      Jwt__Key: ${JWT_KEY:?Set JWT_KEY in .env}
+      Jwt__Issuer: Footprint
+      Jwt__Audience: FootprintClient
+      Jwt__ExpiryMinutes: "60"
+    volumes:
+      - footprint-db-data:/data
+      - footprint-uploads-data:/app/wwwroot/uploads
+    ports:
+      - "5280:8080"
+
+  client:
+    build:
+      context: ./client
+    depends_on:
+      - api
+    ports:
+      - "8081:80"
+
+volumes:
+  footprint-db-data:
+  footprint-uploads-data:

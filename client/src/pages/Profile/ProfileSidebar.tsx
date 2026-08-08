@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import type { Profile as ProfileData } from '../../api/profile'
 import { ALLOWED_PHOTO_TYPES, MAX_PHOTO_BYTES } from '../../api/trips'
+import BadgeChip from './BadgeChip'
 
 const IP_LOCATION_PLACEHOLDER = 'Christchurch, NZ'
 
@@ -73,6 +74,13 @@ function ProfileSidebar({ profile, onAvatarUpload }: ProfileSidebarProps) {
       <div>
         <h1 className="text-lg font-semibold">{profile.displayName}</h1>
         <p className="text-sm text-slate-500">{profile.email}</p>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-medium text-slate-700">
+          {profile.points} {profile.points === 1 ? 'point' : 'points'}
+        </span>
+        <BadgeChip badge={profile.badge} />
       </div>
 
       <p className="text-sm text-slate-600">

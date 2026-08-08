@@ -19,6 +19,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<FootprintDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("FootprintDb")));
 
+
+// 区分权限，使用IdentityCore来管理用户和角色
 builder.Services
     .AddIdentityCore<ApplicationUser>(options =>
     {
@@ -87,7 +89,7 @@ if (app.Environment.IsDevelopment())
     }
 
     // Dev-only seeded admin account so the Admin role has at least one holder
-    // without needing a manual promotion step. See specs/2026-07-29-rbac-admin.md.
+    // 这个userManager是IdentityCore的UserManager，用于管理用户，也是触发hash密码的地方
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
     const string adminEmail = "admin@footprint.com";
     if (await userManager.FindByEmailAsync(adminEmail) is null)
