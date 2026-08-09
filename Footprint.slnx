@@ -2,4 +2,7 @@
   <Folder Name="/API/">
     <Project Path="API/Footprint.csproj" />
   </Folder>
+  <Folder Name="/API.Tests/">
+    <Project Path="API.Tests/Footprint.Tests.csproj" />
+  </Folder>
 </Solution>
