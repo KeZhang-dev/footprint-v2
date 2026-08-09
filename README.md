@@ -88,16 +88,25 @@ evaluation purposes.
 
 ## Self-Reflection
 
-If I were to do this project again, I would:
+If I had more time to polish this project, I would:
+
 - Test the deployment pipeline much earlier in the development 
   process, rather than in the final hours — several late-stage issues 
-  (a circular module import causing runtime bugs, ephemeral filesystem 
-  data loss on the free hosting tier) would have been caught with more 
-  time to investigate and fix properly
-- Plan for database and file persistence in production from the start 
-  of the deployment strategy, rather than discovering the need for a 
-  persistent disk after losing test data
-- Add broader test coverage beyond the minimum required components
+  (a circular module import causing runtime bugs, ephemeral 
+  filesystem data loss on the free hosting tier) could have been 
+  investigated and fixed properly with more time to spare.
+- Plan for database and file persistence in production from the very 
+  start of the deployment strategy, rather than discovering the need 
+  for a persistent disk only after losing test data.
+- Add new features such as user-to-user messaging, to make it a truly 
+  social platform.
+- Add an AI Chat feature to help new users — for example, 
+  automatically sending platform rules and answering simple questions 
+  through an AI chatbot.
+- Finally, fix a number of functional bugs — while the app currently 
+  satisfies basic CRUD requirements, it's not yet a fully polished 
+  product from a real-world perspective, and there are still many 
+  features that need further validation and refinement.
 
 ## AI Usage
 
