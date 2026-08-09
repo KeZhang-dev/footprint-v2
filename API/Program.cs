@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Footprint.Data;
@@ -148,6 +149,17 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+// Serves uploaded trip photos/avatars from wherever IPhotoStorageService
+// actually wrote them, which may not be wwwroot (see Storage:UploadsPath) -
+// pulled from the same service instance so this can never disagree with
+// where PhotoStorageService itself is reading/writing.
+var uploadsPath = app.Services.GetRequiredService<IPhotoStorageService>().UploadsPath;
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads",
+});
 
 app.UseCors();
 

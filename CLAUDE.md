@@ -53,9 +53,13 @@ A travel journaling app. Client/server structure:
   2MB/file max, 10 files/request max) and `DELETE
   /api/trips/{id}/photos/{photoId}` (owner-only) on `TripsController`.
   Files are validated and saved by `Services/PhotoStorageService.cs` to
-  `wwwroot/uploads` (gitignored, `.gitkeep`d) and served unauthenticated via
-  `app.UseStaticFiles()` at `/uploads/*` — see
-  `specs/2026-07-20-photo-upload.md`.
+  `wwwroot/uploads` by default (gitignored, `.gitkeep`d) — overridable via
+  `Storage:UploadsPath` (e.g. `Storage__UploadsPath=/data/uploads` on Render,
+  landing on the same persistent disk as `ConnectionStrings__FootprintDb`,
+  since Render allows only one disk per service) — and served unauthenticated
+  at `/uploads/*` via a second `app.UseStaticFiles()` call in `Program.cs`
+  pointed at `IPhotoStorageService.UploadsPath`, so the serving path can
+  never drift from the save path — see `specs/2026-07-20-photo-upload.md`.
 - Profile: `ApplicationUser` also carries `DisplayName`, `Bio` (max 200
   chars), `Interests` (max 300 chars, free text — the frontend treats it as
   comma-separated tags), `AvatarFileName` — a public nickname/bio/avatar
